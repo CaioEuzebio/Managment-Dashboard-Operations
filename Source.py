@@ -75,7 +75,7 @@ dfmedir['Horas Trabalhadas'] = ((dfmedir['Time Proc Seg'] / 3600))
 df1.loc[(df1.Processed != '::'), 'UnidadesProcessadas'] = df1['Qty']
 df1.loc[(df1.Processed == '::'), 'UnidadesProcessadas'] = 0
 #df1.loc[(df1.Processed == '::'), 'UnidadesProcessadas'] = 0
-dfmedir['Unidades Pendesntes'] = dfmedir['Qty'] - dfmedir['UnidadesProcessadas']
+dfmedir['Unidades Pendentes'] = dfmedir['Qty'] - dfmedir['UnidadesProcessadas']
 
 
 
@@ -85,10 +85,13 @@ dfmedir.loc[(dfmedir.UnidadesProcessadas == 0), 'Time Proc Seg'] = 0
 dfmedir.loc[(dfmedir.UnidadesProcessadas == 0), 'Horas Trabalhadas'] = 0
 
 
+dfmedirgrouped = dfmedir
 
+dfmedirgrouped['Hora'] = dfmedirgrouped['ProcessStartTime'].apply(lambda x: x.hour)
 
 dfmedirgrouped = dfmedir.groupby('Order No').sum()
 dfmedirgrouped.reset_index(inplace=True)
+
 
 dfmedirgrouped.drop_duplicates('Order No', inplace=True)
 #dfmedirgrouped['UPH'] = dfmedirgrouped['UnidadesProcessadas'] / dfmedirgrouped['Horas Trabalhadas']
@@ -148,7 +151,11 @@ df5.reset_index(inplace=True)
 df6.reset_index(inplace=True)
 df7.reset_index(inplace=True)
 
-tabelaoperador = dfoperador
+tabelaordertype = dfordertype
+tabelaordertype.drop(['Order No', 'Time Proc Seg'],axis=1, inplace=True)
+
+
+
 
 app = dash.Dash()
 app.layout = html.Div([
